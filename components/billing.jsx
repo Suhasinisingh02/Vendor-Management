@@ -7,7 +7,7 @@ import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon,
 import { useReactToPrint } from 'react-to-print';
 import './Billing.css';
 
-const Billing = ({ products, setProducts, cart, setCart }) => {
+const Billing = ({ products = [], setProducts = () => {}, cart = [], setCart = () => {} }) => {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
@@ -47,7 +47,6 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
       product.id === currentProduct.id ? updatedProduct : product
     ));
     
-    // Update cart if this product is in cart
     setCart(cart.map(item => 
       item.id === currentProduct.id ? { ...item, price: updatedPrice } : item
     ));
@@ -100,15 +99,14 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
     setTimeout(() => {
       handlePrint();
       setPrintBill(false);
-      // Clear cart after printing
       setCart([]);
       setCustomerName('');
       setCustomerPhone('');
     }, 100);
   };
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProducts = (products || []).filter(product => {
+    const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
     const matchesType = filterType === 'All' || product.type === filterType;
     return matchesSearch && matchesType;
   });
@@ -156,7 +154,6 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
       </div>
 
       <div className="billing-layout">
-        {/* Product List Section */}
         <div className="product-list-section">
           <div className="controls-container">
             <TextField
@@ -191,7 +188,6 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
           </div>
         </div>
 
-        {/* Cart Section */}
         <div className="cart-section">
           <h2>Current Bill</h2>
           
@@ -280,7 +276,6 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
         </div>
       </div>
 
-      {/* Edit Price Dialog */}
       <Dialog open={editMode} onClose={() => setEditMode(false)}>
         <DialogTitle>Update Product Price</DialogTitle>
         <DialogContent style={{ paddingTop: '20px' }}>
@@ -327,7 +322,6 @@ const Billing = ({ products, setProducts, cart, setCart }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Printable Bill (hidden) */}
       <div style={{ display: 'none' }}>
         <div ref={printRef} className="printable-bill">
           <div className="bill-header">

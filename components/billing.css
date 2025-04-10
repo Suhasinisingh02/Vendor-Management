@@ -125,3 +125,9 @@
     font-size: 14px;
     color: #666;
   }
+  
+  .edit-dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
